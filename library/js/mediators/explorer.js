@@ -10,6 +10,11 @@ define(
         messier
     ){
         var mapId = 'explorer'
+            ,placeMarker = true
+            ,icons = {
+                messier: 'http://www.bigbangregistry.com/panojs3/images/dot_blue_20px.png',
+                user: 'http://www.bigbangregistry.com/panojs3/images/dot_brown_20px.png'
+            }
             ,mapOptions = {
                     center: new gm.LatLng(77, -120),
                     zoom: 5,
@@ -147,7 +152,6 @@ define(
                 ,m
                 ,entry
                 ,pos
-                ,icon = 'http://www.bigbangregistry.com/panojs3/images/dot_blue_20px.png'
                 ,proj = map.getProjection()
                 ;
 
@@ -161,7 +165,7 @@ define(
                 m = new gm.Marker({
                         title: entry.title,
                         position: pos,
-                        icon: icon
+                        icon: icons.messier
                     });
 
                 m.setMap(map);
@@ -183,6 +187,35 @@ define(
             gm.event.addListener(map, 'projection_changed', function(){
                 
                 initMessierMarkers(map);
+            });
+
+            var drawingManager = new gm.drawing.DrawingManager({
+                //drawingMode: gm.drawing.OverlayType.MARKER,
+                drawingControl: true,
+                drawingControlOptions: {
+                    position: gm.ControlPosition.TOP_LEFT,
+                    drawingModes: [google.maps.drawing.OverlayType.MARKER]
+                },
+                markerOptions: {
+                    icon: new gm.MarkerImage( icons.user ),
+                    animation: gm.Animation.DROP
+                }
+            });
+            drawingManager.setMap(map);
+
+            // map click
+            gm.event.addListener(drawingManager, 'overlaycomplete', function( event ) {
+
+                var infowindow = new gm.InfoWindow({
+
+                    content: 'Amazing - You just built a new home!<br/>' +
+                        '<br/>How about giving it a name?'+
+                        '<br/><input type="text" placeholder="Awesome name here..." class="new-home-name"/>'+
+                        '<br/><button class="new-home-btn">Name This Feature!</button>(small donation requested)'
+                });
+                
+                infowindow.open( map, event.overlay );
+
             });
         });
     }
