@@ -22,7 +22,7 @@ define(
                     maxZoom: 5,
                     streetViewControl: false,
                     mapTypeControlOptions: {
-
+                        style: gm.MapTypeControlStyle.HORIZONTAL_BAR,
                         mapTypeIds: ['geo', 'infra', 'mic']
                     }
                 }
@@ -194,7 +194,7 @@ define(
                 drawingControl: true,
                 drawingControlOptions: {
                     position: gm.ControlPosition.TOP_LEFT,
-                    drawingModes: [google.maps.drawing.OverlayType.MARKER]
+                    drawingModes: [gm.drawing.OverlayType.MARKER]
                 },
                 markerOptions: {
                     icon: new gm.MarkerImage( icons.user ),
