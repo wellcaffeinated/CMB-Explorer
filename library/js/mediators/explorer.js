@@ -2,12 +2,18 @@ define(
     [
         'jquery',
         'google/maps',
-        'data/messier'
+        'data/messier',
+        'modules/mediator',
+        'modules/map-chooser',
+        'modules/build-control'
     ],
     function(
         $,
         gm,
-        messier
+        messier,
+        mediator,
+        MapChooser,
+        BuildControl
     ){
         var mapId = 'explorer'
             ,placeMarker = true
@@ -20,7 +26,13 @@ define(
                     zoom: 5,
                     minZoom: 1,
                     maxZoom: 5,
+                    mapTypeControl: false,
                     streetViewControl: false,
+                    panControl: false,
+                    overviewMapControl: true,
+                    overviewMapControlOptions: {
+                        opened: true
+                    },
                     mapTypeControlOptions: {
                         style: gm.MapTypeControlStyle.HORIZONTAL_BAR,
                         mapTypeIds: ['geo', 'infra', 'mic']
@@ -172,36 +184,98 @@ define(
             }
             
         }
-        
-        $(function(){
 
-            var el = document.getElementById( mapId );
-            
-            // create map
-            var map = new gm.Map(el, mapOptions);
-            map.mapTypes.set('geo', geoMapType);
-            map.mapTypes.set('infra', infraMapType);
-            map.mapTypes.set('mic', micMapType);
-            map.setMapTypeId('geo');
-
-            gm.event.addListener(map, 'projection_changed', function(){
-                
-                initMessierMarkers(map);
+        // BROKEN
+        function limitBounds(map, bounds){
+            new gm.Rectangle({
+                bounds: bounds,
+                strokeColor: 'red',
+                strokeWeight: 2,
+                map: map
             });
+            var lastValidCenter = map.getCenter()
+                ,b
+                ,ne
+                ,sw
+                ;
+
+            function centerChanged() {
+
+                b = map.getBounds();
+                // if the union of allowed bounds and map's current bounds is equal to allowed bounds
+                // then the map is inside allowed bounds
+                if (
+                    bounds.contains( ne = b.getNorthEast() ) && 
+                    bounds.contains( sw = b.getSouthWest() ) &&
+                    ne.lng() > sw.lng()
+                    // sw.lng() > bounds.getSouthWest().lng() &&
+                    // ne.lng() < bounds.getNorthEast().lng()
+
+                ) {
+                    // still within valid bounds, so save the last valid position
+                    lastValidCenter = map.getCenter();
+                    return; 
+                }
+
+                // not valid anymore => return to last valid position
+                map.panTo(lastValidCenter);
+            }
+
+            gm.event.addListener(map, 'center_changed', centerChanged);
+            gm.event.addListener(map, 'zoom_changed', function(){
+
+                gm.event.addListenerOnce(map, 'idle', function(){
+
+                    var c = map.getCenter();
+                    b = map.getBounds().toSpan();
+console.log(b.toString())
+                    // adjustment to north
+                    var n = Math.max( c.lat() + b.lat()/2 - bounds.getNorthEast().lat(), 0 );
+                    var s = Math.min( c.lat() - b.lat()/2 - bounds.getSouthWest().lat(), 0 );
+                    var e = Math.max( c.lng() + b.lng()/2 - bounds.getNorthEast().lng(), 0 );
+                    var w = Math.min( c.lng() - b.lng()/2 - bounds.getSouthWest().lng(), 0 );
+
+                    console.log(c.lat(), c.lng(), b.lat(), b.lng());
+                    console.log(bounds.getNorthEast().lng(), bounds.getSouthWest().lng())
+                    lastValidCenter = new gm.LatLng(c.lat() - n - s, c.lng() - e - w);
+                    console.log(n, e, s, w)
+                    map.panTo(lastValidCenter);
+                });
+            });
+        }
+        
+        function initBuildControl( map ){
 
             var drawingManager = new gm.drawing.DrawingManager({
-                //drawingMode: gm.drawing.OverlayType.MARKER,
-                drawingControl: true,
-                drawingControlOptions: {
-                    position: gm.ControlPosition.TOP_LEFT,
-                    drawingModes: [gm.drawing.OverlayType.MARKER]
-                },
-                markerOptions: {
-                    icon: new gm.MarkerImage( icons.user ),
-                    animation: gm.Animation.DROP
-                }
+                        //drawingMode: gm.drawing.OverlayType.MARKER,
+                        drawingControl: false,
+                        drawingControlOptions: {
+                            position: gm.ControlPosition.BOTTOM_LEFT,
+                            drawingModes: [gm.drawing.OverlayType.MARKER]
+                        },
+                        markerOptions: {
+                            icon: new gm.MarkerImage( icons.user ),
+                            animation: gm.Animation.DROP
+                        }
+                    })
+                ,bc = BuildControl({
+                    mediator: mediator
+                })
+                ;
+
+            drawingManager.setMap( map );
+
+            mediator.subscribe('/build-control/toggle', function( active ){
+
+                var mode = active? 
+                        gm.drawing.OverlayType.MARKER : 
+                        null
+                        ;
+
+                drawingManager.setDrawingMode( mode );
             });
-            drawingManager.setMap(map);
+
+            map.controls[ gm.ControlPosition.BOTTOM_LEFT ].push( bc.getEl() );
 
             // map click
             gm.event.addListener(drawingManager, 'overlaycomplete', function( event ) {
@@ -216,7 +290,69 @@ define(
                 
                 infowindow.open( map, event.overlay );
 
+                gm.event.addListenerOnce(infowindow, 'closeclick', function(){
+
+                    // remove it
+                    event.overlay.setMap( null );
+                });
+
             });
+        }
+
+        function initMapChooser( map ){
+
+            var el,
+                mc = MapChooser({
+                        mediator: mediator,
+                        layout: {
+                            maps: [
+                                {id: 'geo', name: 'Geography'},
+                                {id: 'infra', name: 'Infrared'},
+                                {id: 'mic', name: 'Microwave'}
+                            ]
+                        }
+                    })
+                ;
+
+            map.mapTypes.set('geo', geoMapType);
+            map.mapTypes.set('infra', infraMapType);
+            map.mapTypes.set('mic', micMapType);
+            map.setMapTypeId('geo');
+
+            mediator.subscribe('/map-chooser/chosen', function( id ){
+
+                map.setMapTypeId( id );
+
+            });
+
+            el = mc.getEl();
+            el.index = 1;
+            map.controls[ gm.ControlPosition.LEFT_CENTER ].push( el );
+        }
+
+        $(function(){
+
+            var el = document.getElementById( mapId );
+            
+            // create map
+            var map = new gm.Map(el, mapOptions);
+
+            // create map frame
+            map.controls[ gm.ControlPosition.TOP_LEFT ].push( $('<div id="map-frame"><div class="top"></div><div class="right"></div><div class="bottom"></div><div class="left"></div></div>')[0] );
+
+            gm.event.addListenerOnce(map, 'projection_changed', function(){
+                
+                initMessierMarkers(map);
+            });
+
+            initBuildControl( map );
+            initMapChooser( map );
+
+            // broken
+            /*limitBounds(map, new gm.LatLngBounds(
+                new google.maps.LatLng(0, -179.99999, true),
+                new google.maps.LatLng(85.05, 179.99999, true)
+            ));*/
         });
     }
 );

@@ -1,15 +1,130 @@
+body {
+
+	background: #F3F3F3
+}
 
 .map-wrap {
 	position: relative;
-	width: 100%;
-	height: 500px;
+	width: 1000px;
+	height: 525px;
+	margin: auto;
 }
 
 #explorer {
-	
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	left: 10%;
-	right: 10%;
+	left: 2%;
+	right: 2%;
+}
+
+#map-frame {
+	position: static !important;
+}
+
+#map-frame .top,
+#map-frame .right,
+#map-frame .bottom,
+#map-frame .left {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	min-width: 35px;
+	min-height: 50px;
+	background: url(../../library/images/map_overlay.png) no-repeat top center;
+}
+
+#map-frame .top {
+	bottom: auto;
+}
+
+#map-frame .right {
+	left: auto;
+	top: 50px;
+	bottom: 50px;
+	background-position: center right;
+}
+
+#map-frame .bottom {
+	top: auto;
+	background-position: bottom center;
+}
+
+#map-frame .left {
+	top: 50px;
+	bottom: 50px;
+	right: auto;
+	background-position: center left;
+}
+
+/* chooser for map types */
+
+.map-chooser .control {
+
+	display: block;
+	width: 64px;
+	height: 64px;
+	overflow: hidden;
+	text-indent: -9999em;
+	background: url(http://www.bigbangregistry.com/panojs3/images/64px_map.png) no-repeat 0 0;
+}
+
+.map-chooser .map-geo {
+
+	background-image: url(http://www.bigbangregistry.com/panojs3/images/64px_map.png);
+}
+
+.map-chooser .map-infra {
+
+	background-image: url(http://www.bigbangregistry.com/panojs3/images/64px_wise.png);
+}
+
+.map-chooser .map-mic {
+
+	background-image: url(http://www.bigbangregistry.com/panojs3/images/64px_wmap.png);
+}
+
+/* build control for user structures */
+
+.build-control .control {
+
+	display: block;
+	background: #eee;
+	color: #666;
+	padding: 10px;
+	text-decoration: none;
+
+	border: 2px solid #5c5555;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	border-radius: 5px;
+
+	-ms-box-shadow: -1px -1px 3px #888 inset, 1px 1px 3px #fff inset;
+
+	-webkit-box-shadow: -1px -1px 3px #888 inset, 1px 1px 3px #fff inset;
+
+	-moz-box-shadow: -1px -1px 3px #888 inset, 1px 1px 3px #fff inset;
+
+	box-shadow: -1px -1px 3px #888 inset, 1px 1px 3px #fff inset;
+}
+
+.build-control .control:hover,
+.build-control .control:focus {
+
+	color: #333;
+}
+
+.build-control .control.active {
+
+	color: #333;
+	padding: 11px 10px 9px;
+	border-color: #9e0000;
+
+	-ms-box-shadow: 2px 2px 3px #888 inset;
+	-webkit-box-shadow: 2px 2px 3px #888 inset;
+	-moz-box-shadow: 2px 2px 3px #888 inset;
+	box-shadow: 2px 2px 3px #888 inset;
 }
