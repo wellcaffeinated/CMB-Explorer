@@ -5,7 +5,8 @@ define(
         'data/messier',
         'modules/mediator',
         'modules/map-chooser',
-        'modules/build-control'
+        'modules/build-control',
+        'modules/fullscreen-control'
     ],
     function(
         $,
@@ -13,7 +14,8 @@ define(
         messier,
         mediator,
         MapChooser,
-        BuildControl
+        BuildControl,
+        FullscreenControl
     ){
         var mapId = 'explorer'
             ,placeMarker = true
@@ -301,8 +303,8 @@ console.log(b.toString())
 
         function initMapChooser( map ){
 
-            var el,
-                mc = MapChooser({
+            var el
+                ,mc = MapChooser({
                         mediator: mediator,
                         layout: {
                             maps: [
@@ -330,6 +332,26 @@ console.log(b.toString())
             map.controls[ gm.ControlPosition.LEFT_CENTER ].push( el );
         }
 
+        function initFullscreenControl( map ){
+
+            var el
+                ,wrap = $('body')
+                ,fc = FullscreenControl({
+                        mediator: mediator
+                    })
+                ;
+
+            mediator.subscribe('/fullscreen-control/toggle', function( active ){
+
+                wrap.toggleClass('fullscreen', active);
+                gm.event.trigger( map, 'resize' );
+            });
+
+            el = fc.getEl();
+
+            map.controls[ gm.ControlPosition.TOP_RIGHT ].push( el );
+        }
+
         $(function(){
 
             var el = document.getElementById( mapId );
@@ -347,6 +369,7 @@ console.log(b.toString())
 
             initBuildControl( map );
             initMapChooser( map );
+            initFullscreenControl( map );
 
             // broken
             /*limitBounds(map, new gm.LatLngBounds(
