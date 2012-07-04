@@ -5,18 +5,9 @@ require.config({
     waitSeconds: 30,
     
     paths: {
-        'jquery': 'libs/jquery',
-        'modernizr': 'libs/modernizr'
+        'jquery': 'libs/jquery'
     },
 
-    shim: {
-
-        'modernizr': {
-
-            exports: 'Modernizr'
-        }
-    },
-    
     map: {
 
         '*': {
