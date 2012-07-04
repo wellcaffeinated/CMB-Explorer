@@ -28,7 +28,7 @@ define(
             ,mapOptions = {
                     center: new gm.LatLng(77, -120),
                     zoom: 5,
-                    minZoom: 1,
+                    minZoom: 2,
                     maxZoom: 5,
                     mapTypeControl: false,
                     streetViewControl: false,
@@ -171,6 +171,14 @@ define(
                 ,proj = map.getProjection()
                 ;
 
+            if(!proj){
+                // projection not ready. Wait for it.
+                gm.event.addListenerOnce(map, 'projection_changed', function(){
+                    initMessierMarkers(map);
+                });
+                return;
+            }
+
             for(i = 0; i < l; i++){
 
                 entry = messier[i];
@@ -178,21 +186,25 @@ define(
                 // TODO: isn't a good projection
                 pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true);
                 
-                // m = new gm.Marker({
-                //         title: entry.title,
-                //         position: pos,
-                //         icon: icons.messier
-                //     });
                 m = new MarkerWithLabel({
                     position: pos,
                     title: entry.name,
                     icon: icons.messier,
+                    shape: {coords:[0,0,0], type:'circle'}, // so icons don't disturb map drag
+                    draggable: false,
+                    raiseOnDrag: false,
                     labelContent: entry.name,
                     labelAnchor: new google.maps.Point(22, 0),
                     labelClass: 'messier-label'
                 });
 
                 m.setMap(map);
+
+                // so labels don't disturb map drag
+                gm.event.clearListeners(m.label.eventDiv_);
+
+                
+
             }
             
         }
