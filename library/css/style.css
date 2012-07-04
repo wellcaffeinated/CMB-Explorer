@@ -1,5 +1,6 @@
 body {
 
+	font-family: helvetica, arial;
 	background: #F3F3F3
 }
 
@@ -43,6 +44,23 @@ body.fullscreen {
 	left: 0;
 	right: 0;
 }
+
+/* messier object labels */
+
+.messier-label {
+
+	padding: 2px 4px;
+	background: rgba(255,255,255, 0.7);
+	color: steelblue;
+	font-size: 11px;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	border-radius: 5px;	
+}
+
+/* frame around map */
 
 #map-frame {
 	position: static !important;

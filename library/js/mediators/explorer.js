@@ -4,6 +4,7 @@ define(
         'google/maps',
         'data/messier',
         'modules/mediator',
+        'util/gm-label-marker',
         'modules/map-chooser',
         'modules/build-control',
         'modules/fullscreen-control'
@@ -13,6 +14,7 @@ define(
         gm,
         messier,
         mediator,
+        MarkerWithLabel,
         MapChooser,
         BuildControl,
         FullscreenControl
@@ -176,11 +178,19 @@ define(
                 // TODO: isn't a good projection
                 pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true);
                 
-                m = new gm.Marker({
-                        title: entry.title,
-                        position: pos,
-                        icon: icons.messier
-                    });
+                // m = new gm.Marker({
+                //         title: entry.title,
+                //         position: pos,
+                //         icon: icons.messier
+                //     });
+                m = new MarkerWithLabel({
+                    position: pos,
+                    title: entry.name,
+                    icon: icons.messier,
+                    labelContent: entry.name,
+                    labelAnchor: new google.maps.Point(22, 0),
+                    labelClass: 'messier-label'
+                });
 
                 m.setMap(map);
             }
@@ -359,13 +369,10 @@ console.log(b.toString())
             // create map
             var map = new gm.Map(el, mapOptions);
 
+            initMessierMarkers(map);
+
             // create map frame
             map.controls[ gm.ControlPosition.TOP_LEFT ].push( $('<div id="map-frame"><div class="top"></div><div class="right"></div><div class="bottom"></div><div class="left"></div></div>')[0] );
-
-            gm.event.addListenerOnce(map, 'projection_changed', function(){
-                
-                initMessierMarkers(map);
-            });
 
             initBuildControl( map );
             initMapChooser( map );
