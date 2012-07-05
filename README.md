@@ -7,3 +7,5 @@ This version is a cleaner implementation using the google maps API,
 and RequireJS for asynchronous JS loading and dependency management.
 
 This version is done by Jasper Palfree [wellcaffeinated.net](http://wellcaffeinated.net).
+
+[See it in action here](http://wellcaffeinated.github.com/CMB-Explorer/)!
