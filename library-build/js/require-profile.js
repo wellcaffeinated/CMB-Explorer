@@ -1,0 +1,1 @@
+({dir:"../../library-build/",appDir:"../",baseUrl:"js/",optimize:"uglify",optimizeCss:"none",fileExclusionRegExp:/^\.|node_modules/,findNestedDependencies:!0,mainConfigFile:"require-config.js",stubModules:["plugins/tpl","plugins/text"],modules:[{name:"core",excludeShallow:["util/hogan","util/hogan-compile"]}]})
