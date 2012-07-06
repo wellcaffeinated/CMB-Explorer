@@ -2,61 +2,46 @@
 define(
 	[
 		'jquery',
+		'stapes',
 		'plugins/tpl!templates/build-control.tpl'
 	],
 	function(
 		$,
+		Stapes,
 		template
 	){
+		'use strict';
+		
+		var BuildControl = Stapes.create().extend({
 
-		function BuildControl(opts){
+			options: {
 
-			if(!(this instanceof BuildControl)){
-
-				return new BuildControl(opts);
-			}
-
-			this.init(opts);
-		}
-
-		BuildControl.prototype = {
-
-			init: function(opts){
-
-				var self = this;
-				
-				// only run once
-				this.init = null;
-
-				this.options = $.extend({
-					//defaults
-					mediator: null
-
-				}, opts);
-
-				this.mediator = this.options.mediator;
-
-				if (!this.mediator)
-					throw "No mediator specified.";
-
-
-				this.el = $('<div>' + template.render() + '</div>');
-
-				this.el.on('click', '.control', function(e){
-
-					e.preventDefault();
-
-					var $this = $(this).toggleClass('active');
-
-					self.mediator.publish( '/build-control/toggle', $this.is('.active') );
-				});
 			},
 
-			getEl: function(){
+			init: function( opts ){
 
-				return this.el[0];
+				this.extend( this.options, opts ).emit( 'ready' )
+				return this;
 			}
-		};
+		});
+
+		BuildControl.on('ready', function(){
+
+			var self = this
+				,el = $('<div>' + template.render() + '</div>');
+				;
+
+			self.set('el', el[0]);
+
+			el.on('click', '.control', function(e){
+
+				e.preventDefault();
+
+				var $this = $(this).toggleClass('active');
+
+				self.emit( 'toggle', $this.is('.active') );
+			});
+		});
 
 		return BuildControl;
 	}

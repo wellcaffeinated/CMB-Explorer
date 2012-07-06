@@ -5,7 +5,8 @@ require.config({
     waitSeconds: 30,
     
     paths: {
-        'jquery': 'libs/jquery'
+        'jquery': 'libs/jquery',
+        'stapes': 'libs/stapes'
     },
 
     map: {
