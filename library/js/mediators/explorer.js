@@ -3,7 +3,7 @@ define(
         'jquery',
         'stapes',
         'google/maps',
-        'data/messier',
+        'modules/celestial-model',
         'util/gm-label-marker',
         'modules/map-chooser',
         'modules/build-control',
@@ -13,7 +13,7 @@ define(
         $,
         Stapes,
         gm,
-        messier,
+        CelestialModel,
         MarkerWithLabel,
         MapChooser,
         BuildControl,
@@ -226,42 +226,63 @@ define(
             // @TODO: make this MVC!!!
             initMessierMarkers: function( map ){
 
-                var i
-                    ,l = messier.length
-                    ,m
-                    ,entry
-                    ,pos
+                var model
                     ,proj = map.getProjection()
+                    ,markers = {}
                     ;
 
                 if(!proj) return; // just in case something goes wrong
 
-                for(i = 0; i < l; i++){
+                model = CelestialModel.init({
 
-                    entry = messier[i];
+                    url: 'data/messier.json',
+                    idKey: 'name'
 
-                    // @TODO: isn't a good projection (i think)
-                    pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true);
-                    
-                    m = new MarkerWithLabel({
-                        position: pos,
-                        title: entry.name,
-                        icon: icons.messier,
-                        shape: {coords:[0,0,0], type:'circle'}, // so icons don't disturb map drag
-                        draggable: false,
-                        raiseOnDrag: false,
-                        labelContent: entry.name,
-                        labelAnchor: new google.maps.Point(22, 0),
-                        labelClass: 'messier-label'
-                    });
+                }).on({
 
-                    m.setMap(map);
+                    'create': function( id ){
 
-                    // so labels don't disturb map drag... this is a bit sketchy because
-                    // it's accessing something "private"... but meh.
-                    gm.event.clearListeners(m.label.eventDiv_);
+                        var entry = this.get( id )
+                            ,pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true)
+                            ,m
+                            ;
 
-                }   
+                        m = markers[ id ] = new MarkerWithLabel({
+                            position: pos,
+                            title: entry.name,
+                            icon: icons.messier,
+                            shape: {coords:[0,0,0], type:'circle'}, // so icons don't disturb map drag
+                            draggable: false,
+                            raiseOnDrag: false,
+                            labelContent: entry.name,
+                            labelAnchor: new gm.Point(22, 0),
+                            labelClass: 'messier-label'
+                        });
+
+                        m.setMap(map);
+
+                        // so labels don't disturb map drag... this is a bit sketchy because
+                        // it's accessing something "private"... but meh.
+                        gm.event.clearListeners(m.label.eventDiv_);
+                    },
+
+                    'change': function( id ){
+
+                        if(!markers[ id ]) return;
+
+                        var entry = this.get( id )
+                            // @TODO: isn't a good projection (i think)
+                            ,pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true)
+                            ;
+
+                        markers[ id ].setPosition( pos );
+                    },
+
+                    'remove': function( id ){
+
+                        markers[ id ].setMap( null );
+                    }
+                });
             },
 
             initFullscreenControl: function(){

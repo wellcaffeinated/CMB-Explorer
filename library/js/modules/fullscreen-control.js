@@ -19,33 +19,39 @@ define(
 			},
 
 			init: function( opts ){
-				
-				this.extend( this.options, opts ).emit( 'ready' )
-				return this;
-			}
-		});
 
-		FullscreenControl.on('ready', function(){
-
-			var self = this
-				,el = $('<div>' + template.render() + '</div>')
-				;
-
-			self.set('el', el[0]);
-
-			el.on('click', '.control', function(e){
-
-				e.preventDefault();
-
-				var $this = $(this).toggleClass('active')
-					,active = $this.is('.active')
+				var self = this
+					,el = $('<div>' + template.render() + '</div>')
 					;
 
-				$this.text( active? 'Exit Fullscreen' : 'Fullscreen' );
-				self.emit( 'toggle', active );
-			});
+				this.extend( this.options, opts );
+
+				self.set('el', el[0]);
+
+				el.on('click', '.control', function(e){
+
+					e.preventDefault();
+
+					var $this = $(this).toggleClass('active')
+						,active = $this.is('.active')
+						;
+
+					$this.text( active? 'Exit Fullscreen' : 'Fullscreen' );
+					self.emit( 'toggle', active );
+				});
+
+				this.emit( 'ready' );
+				return this;
+			}
+
 		});
 
-		return FullscreenControl;
+		return {
+			
+			init: function( opts ){
+
+				return FullscreenControl.create().init( opts );
+			}
+		};
 	}
 );

@@ -15,6 +15,10 @@ require.config({
             'jquery': 'modules/adapters/jquery',
             'google/maps': 'modules/adapters/google-maps'
         },
+
+        'plugins/json': {
+            'text': 'plugins/text'
+        },
         
         'modules/adapters/jquery': {
             'jquery': 'jquery'

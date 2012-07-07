@@ -20,29 +20,34 @@ define(
 
 			init: function( opts ){
 
-				this.extend( this.options, opts ).emit( 'ready' )
+				var self = this
+					,el = $('<div>' + template.render() + '</div>');
+					;
+
+				this.extend( this.options, opts );
+
+				self.set('el', el[0]);
+
+				el.on('click', '.control', function(e){
+
+					e.preventDefault();
+
+					var $this = $(this).toggleClass('active');
+
+					self.emit( 'toggle', $this.is('.active') );
+				});
+
+				this.emit( 'ready' );
 				return this;
 			}
 		});
 
-		BuildControl.on('ready', function(){
+		return {
+			
+			init: function( opts ){
 
-			var self = this
-				,el = $('<div>' + template.render() + '</div>');
-				;
-
-			self.set('el', el[0]);
-
-			el.on('click', '.control', function(e){
-
-				e.preventDefault();
-
-				var $this = $(this).toggleClass('active');
-
-				self.emit( 'toggle', $this.is('.active') );
-			});
-		});
-
-		return BuildControl;
+				return BuildControl.create().init( opts );
+			}
+		};
 	}
 );
