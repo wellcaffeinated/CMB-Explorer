@@ -32,7 +32,7 @@ define(
 				return this;
 			},
 
-			fetch: function( url ){
+			fetch: function( url, retryDelay ){
 
 				var self = this
 					;
@@ -50,6 +50,16 @@ define(
 					self.add( data );
 
 					self.emit('fetch');
+
+				}, function(){
+					// error callback
+					retryTimeout = ~~retryTimeout + 1;
+
+					setTimeout(function(){
+
+						self.fetch( url, retryTimeout );
+						// grow the delay every time it tries
+					}, Math.pow(2,retryTimeout)*1000);
 				});
 
 				return this;
