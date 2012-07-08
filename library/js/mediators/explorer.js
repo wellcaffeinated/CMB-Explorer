@@ -4,7 +4,7 @@ define(
         'stapes',
         'google/maps',
         'modules/celestial-model',
-        'util/gm-label-marker',
+        'modules/marker-manager',
         'modules/map-chooser',
         'modules/build-control',
         'modules/fullscreen-control'
@@ -14,7 +14,7 @@ define(
         Stapes,
         gm,
         CelestialModel,
-        MarkerWithLabel,
+        MarkerManager,
         MapChooser,
         BuildControl,
         FullscreenControl
@@ -83,24 +83,10 @@ define(
                         // create map frame
                         map.controls[ gm.ControlPosition.TOP_LEFT ].push( $('<div id="map-frame"><div class="top"></div><div class="right"></div><div class="bottom"></div><div class="left"></div></div>')[0] );
 
-                        // monitor projection to see when it's ready
-                        if ( map.getProjection() ){
-
-                            self.emit( 'projection_ready', map );
-
-                        } else {
-
-                            gm.event.addListenerOnce(map, 'projection_changed', function(){
-                                
-                                self.emit( 'projection_ready', map );
-                            });
-                        }
-
                         self.initMapTypes();
                         self.initModules();
                     },
 
-                    'projection_ready': self.initMessierMarkers,
                     'types_ready': self.initMapChooser
 
                 });
@@ -108,6 +94,7 @@ define(
 
             initModules: function(){
 
+                this.initMessierMarkers();
                 this.initFullscreenControl();
                 this.initBuildControl();
             },
@@ -224,65 +211,36 @@ define(
             },
 
             // @TODO: make this MVC!!!
-            initMessierMarkers: function( map ){
+            initMessierMarkers: function(){
 
                 var model
-                    ,proj = map.getProjection()
-                    ,markers = {}
+                    ,markers
                     ;
-
-                if(!proj) return; // just in case something goes wrong
 
                 model = CelestialModel.init({
 
                     url: 'data/messier.json',
                     idKey: 'name'
 
-                }).on({
-
-                    'create': function( id ){
-
-                        var entry = this.get( id )
-                            ,pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true)
-                            ,m
-                            ;
-
-                        m = markers[ id ] = new MarkerWithLabel({
-                            position: pos,
-                            title: entry.name,
-                            icon: icons.messier,
-                            shape: {coords:[0,0,0], type:'circle'}, // so icons don't disturb map drag
-                            draggable: false,
-                            raiseOnDrag: false,
-                            labelContent: entry.name,
-                            labelAnchor: new gm.Point(22, 0),
-                            labelClass: 'messier-label'
-                        });
-
-                        m.setMap(map);
-
-                        // so labels don't disturb map drag... this is a bit sketchy because
-                        // it's accessing something "private"... but meh.
-                        gm.event.clearListeners(m.label.eventDiv_);
-                    },
-
-                    'change': function( id ){
-
-                        if(!markers[ id ]) return;
-
-                        var entry = this.get( id )
-                            // @TODO: isn't a good projection (i think)
-                            ,pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true)
-                            ;
-
-                        markers[ id ].setPosition( pos );
-                    },
-
-                    'remove': function( id ){
-
-                        markers[ id ].setMap( null );
-                    }
                 });
+
+                markers = MarkerManager.init({
+                    markerDefaults: {
+                        icon: icons.messier,
+                        shape: {coords:[0,0,0], type:'circle'}, // so icons don't disturb map drag
+                        draggable: false,
+                        raiseOnDrag: false,
+                        labelAnchor: new gm.Point(22, 0),
+                        labelClass: 'messier-label'
+                    },
+
+                    model: model,
+                    map: this.get('map')
+
+                });
+
+                this.set( 'messier_model', model );
+                this.set( 'messier_data', markers );
             },
 
             initFullscreenControl: function(){
