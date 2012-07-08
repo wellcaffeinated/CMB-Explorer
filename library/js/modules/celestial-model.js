@@ -65,20 +65,26 @@ define(
 				return this;
 			},
 
-			find: function( prop, val ){
+			/**
+			 * Find property `prop` in data equal to `val`.
+			 * If `fuzzy` is true, search strings for similar (not necessarily equal) strings.
+			 */
+			find: function( prop, val, fuzzy ){
 
 				var self = this
+					,v
 					,fn = (Stapes.util.typeOf(prop) === 'function')? prop : function( item ){
 
-							return item[ prop ] === val;
+							v = item[ prop ];
+							
+							return (fuzzy && Stapes.util.typeOf(v) === 'string')? 
+								v.indexOf( val ) > -1 : // search substr
+								v === val // exact search
+								;
 						}
-					,keys = this.filter( fn )
 					;
 
-				return Stapes.util.map( keys, function( k ){
-
-					return self.get( k );
-				});
+				return this.filter( fn );
 			},
 
 			add: function( data ){

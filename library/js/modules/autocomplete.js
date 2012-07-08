@@ -216,7 +216,15 @@ define(
 					hide: function(){
 						
 						$(this).hide();
-					}
+					},
+
+					// custom function used to fetch results for the autocomplete
+					// function( value, callback )
+					// the `value` is the value to autocomplete
+					// the `callback` is the function to call when results are ready
+					// pass the callback an object holding the results; it will
+					// be used to render the template.
+					fetch: null
 					
 					
 				}, config);
@@ -637,14 +645,10 @@ define(
 						self.deactivate();
 						return;
 					}
-					
-					self.ajaxRequest = $.ajax({
-						
-						url: self.url + (self.url.indexOf('?') !== -1 ? '&' : '?') + encodeURIComponent(self.el.attr('name')) + '=' + encodeURIComponent(value),
-						
-						dataType: 'json',
-						
-						success: function( data ){
+
+					if ( this.config.fetch ){
+
+						this.config.fetch( value, function( data ){
 							
 							// Need extra preprocessing? add it here.
 							content = data;
@@ -653,19 +657,39 @@ define(
 							
 							callback( content );
 							
-						},
-						
-						error: function(){
+						});
+
+						return;
+
+					} else {
+
+						self.ajaxRequest = $.ajax({
 							
-							callback( false );
+							url: self.url + (self.url.indexOf('?') !== -1 ? '&' : '?') + encodeURIComponent(self.el.attr('name')) + '=' + encodeURIComponent(value),
 							
-						}
-						
-						
-					});
-					
+							dataType: 'json',
+							
+							success: function( data ){
+								
+								// Need extra preprocessing? add it here.
+								content = data;
+								
+								self.cache[ value ] = content;
+								
+								callback( content );
+								
+							},
+							
+							error: function(){
+								
+								callback( false );
+								
+							}
+							
+							
+						});
+					}
 				}
-				
 			},
 			
 			/**

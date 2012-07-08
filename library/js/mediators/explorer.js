@@ -7,7 +7,8 @@ define(
         'modules/marker-manager',
         'modules/map-chooser',
         'modules/build-control',
-        'modules/fullscreen-control'
+        'modules/fullscreen-control',
+        'modules/search-control'
     ],
     function(
         $,
@@ -17,7 +18,8 @@ define(
         MarkerManager,
         MapChooser,
         BuildControl,
-        FullscreenControl
+        FullscreenControl,
+        SearchControl
     ){
         'use strict';
 
@@ -213,10 +215,13 @@ define(
             // @TODO: make this MVC!!!
             initMessierMarkers: function(){
 
-                var model
+                var map = this.get('map')
+                    ,model
                     ,markers
+                    ,search
                     ;
 
+                // messier data model
                 model = CelestialModel.init({
 
                     url: 'data/messier.json',
@@ -224,6 +229,7 @@ define(
 
                 });
 
+                // marker renderer (view)
                 markers = MarkerManager.init({
                     markerDefaults: {
                         icon: icons.messier,
@@ -239,8 +245,28 @@ define(
 
                 });
 
+                // search control
+                search = SearchControl.init({});
+
+                search.on({
+
+                    'autocomplete': function( val, callback ){
+
+                        search.set('results', model.find( 'name', val, true ) );
+                    },
+
+                    'search': function( feature ){
+
+                        markers.focusTo( feature );
+
+                    }
+                });
+
+                map.controls[ gm.ControlPosition.TOP_CENTER ].push( search.get('el') );
+
+                this.set( 'search_view', search );
                 this.set( 'messier_model', model );
-                this.set( 'messier_data', markers );
+                this.set( 'messier_view', markers );
             },
 
             initFullscreenControl: function(){

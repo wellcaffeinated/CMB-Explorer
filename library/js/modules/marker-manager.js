@@ -14,6 +14,8 @@ define(
 
 			options: {
 
+				map: null,
+
 				markerDefaults: {
 
 				}
@@ -111,6 +113,19 @@ define(
 				return this;
 			},
 
+			focusTo: function( id ){
+
+				var m = this.get( id )
+					,map = this.options.map
+					;
+
+				if (!m || !map) return this;
+
+				map.setCenter(m.getPosition());
+				
+				return this;
+			},
+
 			addMarker: function( id, opts ){
 
 				// parse settings
@@ -120,7 +135,7 @@ define(
 
 				Stapes.util.each(opts, function( val, key ){
 
-					if(val) settings[ key ] = val;
+					if (val) settings[ key ] = val;
 				});
 				
 				// create the marker
