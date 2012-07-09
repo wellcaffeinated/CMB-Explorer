@@ -5,7 +5,8 @@ require.config({
     waitSeconds: 30,
     
     paths: {
-        'jquery': 'libs/jquery'
+        'jquery': 'libs/jquery',
+        'stapes': 'libs/stapes'
     },
 
     map: {
@@ -13,6 +14,10 @@ require.config({
         '*': {
             'jquery': 'modules/adapters/jquery',
             'google/maps': 'modules/adapters/google-maps'
+        },
+
+        'plugins/json': {
+            'text': 'plugins/text'
         },
         
         'modules/adapters/jquery': {

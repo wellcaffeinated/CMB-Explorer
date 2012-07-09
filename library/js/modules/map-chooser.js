@@ -2,60 +2,57 @@
 define(
 	[
 		'jquery',
+		'stapes',
 		'plugins/tpl!templates/map-chooser.tpl'
 	],
 	function(
 		$,
+		Stapes,
 		template
 	){
+		'use strict';
 
-		function MapChooser(opts){
+		var MapChooser = Stapes.create().extend({
 
-			if(!(this instanceof MapChooser)){
+			options: {
+				layout: {}
+			},
 
-				return new MapChooser(opts);
-			}
+			init: function( opts ){
 
-			this.init(opts);
-		}
+				var self = this
+					,el
+					;
 
-		MapChooser.prototype = {
+				this.extend( this.options, opts );
 
-			init: function(opts){
+				el = $('<div>' + template.render( self.options.layout ) + '</div>');
 
-				var self = this;
+				self.set('el', el[0]);
 
-				// only run once
-				this.init = null;
-
-				this.options = $.extend({
-					//defaults
-					mediator: null
-
-				}, opts);
-
-				this.mediator = this.options.mediator;
-
-				if (!this.mediator)
-					throw "No mediator specified.";
-
-
-				this.el = $('<div>' + template.render( this.options.layout ) + '</div>');
-
-				this.el.on('click', '.control', function(e){
+				el.on('click', '.control', function(e){
 
 					e.preventDefault();
 
-					self.mediator.publish( '/map-chooser/chosen', $(this).attr('data-map-id') );
+					self.emit( 'chosen', $(this).attr('data-map-id') );
 				});
-			},
 
-			getEl: function(){
+				this.emit( 'ready' );
+				return this;
+			}
+		});
 
-				return this.el[0];
+		MapChooser.on('ready', function(){
+
+			
+		});
+
+		return {
+			
+			init: function( opts ){
+
+				return MapChooser.create().init( opts );
 			}
 		};
-
-		return MapChooser;
 	}
 );

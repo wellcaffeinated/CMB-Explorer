@@ -2,47 +2,33 @@
 define(
 	[
 		'jquery',
+		'stapes',
 		'plugins/tpl!templates/fullscreen-control.tpl'
 	],
 	function(
 		$,
+		Stapes,
 		template
 	){
+		'use strict';
 
-		function FullscreenControl(opts){
+		var FullscreenControl = Stapes.create().extend({
 
-			if(!(this instanceof FullscreenControl)){
+			options: {
 
-				return new FullscreenControl(opts);
-			}
+			},
 
-			this.init(opts);
-		}
+			init: function( opts ){
 
-		FullscreenControl.prototype = {
+				var self = this
+					,el = $('<div>' + template.render() + '</div>')
+					;
 
-			init: function(opts){
+				this.extend( this.options, opts );
 
-				var self = this;
-				
-				// only run once
-				this.init = null;
+				self.set('el', el[0]);
 
-				this.options = $.extend({
-					//defaults
-					mediator: null
-
-				}, opts);
-
-				this.mediator = this.options.mediator;
-
-				if (!this.mediator)
-					throw "No mediator specified.";
-
-
-				this.el = $('<div>' + template.render() + '</div>');
-
-				this.el.on('click', '.control', function(e){
+				el.on('click', '.control', function(e){
 
 					e.preventDefault();
 
@@ -51,16 +37,21 @@ define(
 						;
 
 					$this.text( active? 'Exit Fullscreen' : 'Fullscreen' );
-					self.mediator.publish( '/fullscreen-control/toggle', active );
+					self.emit( 'toggle', active );
 				});
-			},
 
-			getEl: function(){
+				this.emit( 'ready' );
+				return this;
+			}
 
-				return this.el[0];
+		});
+
+		return {
+			
+			init: function( opts ){
+
+				return FullscreenControl.create().init( opts );
 			}
 		};
-
-		return FullscreenControl;
 	}
 );
