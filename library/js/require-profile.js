@@ -16,7 +16,7 @@
     mainConfigFile: 'require-config.js',
 
     // don't need these modules to function in the build. So create stubs.
-    stubModules: [ 'plugins/tpl', 'plugins/text' ],
+    stubModules: [ 'plugins/tpl' ],// 'plugins/text' ],
 
     modules: [
         {
