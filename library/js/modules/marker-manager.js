@@ -117,12 +117,20 @@ define(
 
 				var m = this.get( id )
 					,map = this.options.map
+					,pos
+					,l
 					;
 
 				if (!m || !map) return this;
 
-				map.setCenter(m.getPosition());
+				pos = m.getPosition();
+				l = pos.lng()+180;
+				pos = new gm.LatLng(pos.lat(), (l < 0 ? l%360+360 : l%360) - 180, true);
 				
+				// wrap around so lng() stays within the range (-180,180)
+				map.setCenter( pos );
+				map.setZoom( 5 );
+
 				return this;
 			},
 

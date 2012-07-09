@@ -72,17 +72,32 @@ define(
 			find: function( prop, val, fuzzy ){
 
 				var self = this
+					,reg
 					,v
-					,fn = (Stapes.util.typeOf(prop) === 'function')? prop : function( item ){
+					,fn
+					;
+
+					if (Stapes.util.typeOf(prop) === 'function'){
+
+						fn = prop;
+
+					} else if (fuzzy){
+
+						reg = new RegExp( val, 'i' );
+
+						fn = function( item ){
 
 							v = item[ prop ];
-							
-							return (fuzzy && Stapes.util.typeOf(v) === 'string')? 
-								v.indexOf( val ) > -1 : // search substr
-								v === val // exact search
-								;
+							return v.match && v.match( reg );
+						};
+
+					} else {
+
+						fn = function( item ){
+
+							return item[ prop ] === val;
 						}
-					;
+					}
 
 				return this.filter( fn );
 			},
