@@ -4,12 +4,13 @@ js/core.js
 js/require-config.js
 js/libs/jquery.js
 js/modules/adapters/jquery.js
+js/libs/stapes.js
 js/plugins/async.js
 plugins/async!http://maps.googleapis.com/maps/api/js?key=AIzaSyDtVrxyniaAXbNuA2d_pjFdBmzOQJD1bHY&sensor=false&libraries=drawing
 js/modules/adapters/google-maps.js
-js/data/messier.js
-js/modules/mediator.js
+js/modules/celestial-model.js
 js/util/gm-label-marker.js
+js/modules/marker-manager.js
 js/plugins/text.js
 js/util/hogan-render.js
 js/plugins/tpl.js
@@ -19,5 +20,10 @@ plugins/tpl!templates/build-control.tpl
 js/modules/build-control.js
 plugins/tpl!templates/fullscreen-control.tpl
 js/modules/fullscreen-control.js
+plugins/tpl!templates/autocomplete.tpl
+js/modules/caret.jquery.js
+js/modules/autocomplete.js
+plugins/tpl!templates/search-control.tpl
+js/modules/search-control.js
 js/mediators/explorer.js
 js/core.js
