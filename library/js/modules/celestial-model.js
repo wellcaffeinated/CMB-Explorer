@@ -43,7 +43,7 @@ define(
 				require([ 'plugins/json!'+url ], function( data ){
 
 					if ( self.options.filter ){
-
+						
 						data = self.options.filter( data );
 					}
 

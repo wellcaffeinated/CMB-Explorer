@@ -24,8 +24,10 @@ define(
         'use strict';
 
         var icons = {
-            messier: 'http://www.bigbangregistry.com/panojs3/images/dot_blue_20px.png',
-            user: 'http://www.bigbangregistry.com/panojs3/images/dot_brown_20px.png'
+            messier: '/library/images/icon_20px_dot_blue.png',
+            user: '/library/images/icon_20px_dot_brown.png',
+            boat: '/library/images/icon_32px_boat.png',
+            house: '/library/images/icon_32px_house.png'
         };
 
         var explorer = Stapes.create().extend({
@@ -35,10 +37,10 @@ define(
                 var self = this
                     ,mapId = 'explorer'
                     ,mapOptions = {
-                            center: new gm.LatLng(77, -120),
-                            zoom: 5,
-                            minZoom: 2,
-                            maxZoom: 5,
+                            center: new gm.LatLng(81.8, -150),
+                            zoom: 6,
+                            minZoom: 3,
+                            maxZoom: 6,
                             mapTypeControl: false,
                             streetViewControl: false,
                             panControl: false,
@@ -57,8 +59,9 @@ define(
                     var el = document.getElementById( mapId );
                     
                     // create map
+                    self.set('mapOptions', mapOptions);
                     self.set('map', new gm.Map(el, mapOptions));
-
+                    
                     // broken
                     /*limitBounds(map, new gm.LatLngBounds(
                         new google.maps.LatLng(0, -179.99999, true),
@@ -67,10 +70,64 @@ define(
                 });
             },
 
+            pointToLatLng: function( point ){
+
+                var proj = this.get('projection')
+                    ,factor = 1 << (this.get('mapOptions').minZoom - 2)
+                    ,ll = proj.fromPointToLatLng(new gm.Point(point.x/factor, point.y/factor))
+                    ;
+
+                return ll;
+            },
+
+            latLngToPoint: function( latLng ){
+
+                var proj = this.get('projection')
+                    ,factor = 1 << (this.get('mapOptions').minZoom - 2)
+                    ,wc = proj.fromLatLngToPoint(latLng)
+                    ;
+
+                return new gm.Point( wc.x*factor, wc.y*factor );
+            },
+
+            getTerrain: function(latLng, callback){
+                
+                var wc = this.latLngToPoint(latLng);
+                    ;
+
+                $.ajax({
+                    url: '/data/terrain/',
+                    data: 'x='+wc.x+'&y='+wc.y,
+                    dataType: 'json',
+                    success: function( json ){
+
+                        callback( json.terrain );
+                    } 
+                });
+            },
+
             initEventHandlers: function(){
 
                 var self = this
                     ;
+
+                // get projection, or wait until we can get it. Then remember it.
+                function setProj( map ){
+
+                    var proj = map.getProjection();
+
+                    if (!proj){
+
+                        gm.event.addListenerOnce(map, 'projection_changed', function(){
+                            
+                            setProj( map );
+                        });
+
+                    } else {
+
+                        self.set('projection', proj);
+                    }
+                }
 
                 this.on({
                     
@@ -86,7 +143,15 @@ define(
                         map.controls[ gm.ControlPosition.TOP_LEFT ].push( $('<div id="map-frame"><div class="top"></div><div class="right"></div><div class="bottom"></div><div class="left"></div></div>')[0] );
 
                         self.initMapTypes();
-                        self.initModules();
+
+                        setProj( map );
+                    },
+
+                    'create:projection': function(){
+
+                        self.initMessierMarkers();
+                        this.initBuildControl();
+                        this.initFullscreenControl();
                     },
 
                     'types_ready': self.initMapChooser
@@ -94,17 +159,11 @@ define(
                 });
             },
 
-            initModules: function(){
-
-                this.initMessierMarkers();
-                this.initFullscreenControl();
-                this.initBuildControl();
-            },
-
             initMapTypes: function(){
 
                 var self = this
                     ,map = self.get('map')
+                    ,mapOpts = self.get('mapOptions')
                     ,typeList = [
                             {id: 'geo', name: 'Geography', tilesDir: 'tiles1/'},
                             {id: 'infra', name: 'Infrared', tilesDir: 'tiles2/'},
@@ -126,14 +185,14 @@ define(
 
                     // tile range in one direction range is dependent on zoom level
                     // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
-                    var tileRange = 1 << zoom;
+                    var tileRange = 1 << (2 - mapOpts.minZoom + zoom);
 
-                    // don't repeat across y-axis (vertically)
+                    // don't repeat across y-axis (vertically) ()
                     if (y < 0 || y >= (tileRange>>1)) {
                         return null;
                     }
 
-                    // repeat across x-axis
+                    // don't repeat across x-axis
                     if (x < 0 || x >= tileRange) {
                         return null; //x = (x % tileRange + tileRange) % tileRange;
                     }
@@ -167,16 +226,16 @@ define(
                                     return null;
                                 }
 
-                                var bound = Math.pow(2, zoom-1);
+                                var bound = 3+mapOpts.minZoom-zoom;
 
                                 return 'http://data.bigbangregistry.com/panojs3/' + mapType.tilesDir +
-                                    'tile__'+ numberPad(5-zoom,3) +
+                                    'tile__'+ numberPad(bound,3) +
                                     '_' + numberPad(normalizedCoord.x,3) + 
                                     '_' + numberPad(normalizedCoord.y,3) + '.jpg';
                             },
                             tileSize: new gm.Size(256, 256),
-                            maxZoom: 5,
-                            minZoom: 1,
+                            maxZoom: mapOpts.maxZoom,
+                            minZoom: mapOpts.minZoom,
                             //radius: 1738000,
                             name: mapType.name
                         }));
@@ -212,10 +271,10 @@ define(
                 map.controls[ gm.ControlPosition.LEFT_CENTER ].push( mc.get('el') );
             },
 
-            // @TODO: make this MVC!!!
             initMessierMarkers: function(){
 
-                var map = this.get('map')
+                var self = this
+                    ,map = this.get('map')
                     ,model
                     ,markers
                     ,search
@@ -224,8 +283,17 @@ define(
                 // messier data model
                 model = CelestialModel.init({
 
-                    url: 'data/messier.json',
-                    idKey: 'name'
+                    url: '/data/messier',
+                    idKey: 'name',
+                    filter: function( data ){
+
+                        return Stapes.util.map(data, function( v ){
+                            var ll = self.pointToLatLng(new gm.Point(v.x, v.y));
+                            v.lng = ll.lng();
+                            v.lat = ll.lat();
+                            return v;
+                        });
+                    }
 
                 });
 
@@ -297,7 +365,7 @@ define(
                                 drawingModes: [gm.drawing.OverlayType.MARKER]
                             },
                             markerOptions: {
-                                icon: new gm.MarkerImage( icons.user ),
+                                icon: new gm.MarkerImage( icons.house ),
                                 animation: gm.Animation.DROP
                             }
                         })
@@ -318,6 +386,17 @@ define(
 
                 map.controls[ gm.ControlPosition.BOTTOM_LEFT ].push( bc.get('el') );
 
+                self.on('mutate:currentHome', function( homes ){
+
+                    if (homes.oldValue){
+                        
+                        // remove old marker
+                        homes.oldValue.marker.setMap( null );
+                        homes.oldValue.infowindow.close();
+                    }
+
+                });
+
                 // map click
                 gm.event.addListener(drawingManager, 'overlaycomplete', function( event ) {
 
@@ -329,12 +408,28 @@ define(
                             '<br/><button class="new-home-btn">Name This Feature!</button>(small donation requested)'
                     });
                     
+                    self.set('currentHome', {
+                        infowindow: infowindow,
+                        marker: event.overlay
+                    });
+
+                    self.getTerrain(event.overlay.getPosition(), function(val){
+                        
+                        var home = self.get('currentHome');
+                        if(home){
+                            event.overlay.setIcon(icons[
+                                val === 'land'? 'house' : 'boat'
+                            ]);
+                        }
+
+                    });
+
                     infowindow.open( map, event.overlay );
 
                     gm.event.addListenerOnce(infowindow, 'closeclick', function(){
 
                         // remove it
-                        event.overlay.setMap( null );
+                        self.set('currentHome', null);
                     });
 
                 });

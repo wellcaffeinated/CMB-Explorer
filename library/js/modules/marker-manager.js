@@ -78,7 +78,7 @@ define(
                     'create': function( id ){
 
                         var entry = this.get( id )
-                            ,pos = proj.fromPointToLatLng(new gm.Point(entry.x, entry.y), true)
+                            ,pos = new gm.LatLng(entry.lat, entry.lng)
                             ,m
                             ;
 
