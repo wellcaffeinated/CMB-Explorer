@@ -8,7 +8,8 @@ define(
         'modules/map-chooser',
         'modules/build-control',
         'modules/fullscreen-control',
-        'modules/search-control'
+        'modules/search-control',
+        'plugins/tpl!templates/name-feature-bubble.tpl'
     ],
     function(
         $,
@@ -19,7 +20,8 @@ define(
         MapChooser,
         BuildControl,
         FullscreenControl,
-        SearchControl
+        SearchControl,
+        nameFeatureBubble
     ){
         'use strict';
 
@@ -268,7 +270,7 @@ define(
 
                 });
 
-                map.controls[ gm.ControlPosition.LEFT_CENTER ].push( mc.get('el') );
+                map.controls[ gm.ControlPosition.LEFT_TOP ].push( mc.get('el') );
             },
 
             initMessierMarkers: function(){
@@ -402,10 +404,7 @@ define(
 
                     var infowindow = new gm.InfoWindow({
 
-                        content: 'Amazing - You just built a new home!<br/>' +
-                            '<br/>How about giving it a name?'+
-                            '<br/><input type="text" placeholder="Awesome name here..." class="new-home-name"/>'+
-                            '<br/><button class="new-home-btn">Name This Feature!</button>(small donation requested)'
+                        content: nameFeatureBubble.render()
                     });
                     
                     self.set('currentHome', {
