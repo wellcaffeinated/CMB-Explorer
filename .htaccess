@@ -3,7 +3,7 @@
 
     RewriteEngine On
     # may need to change this depending on your setup
-    RewriteBase /data
+    RewriteBase /
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>

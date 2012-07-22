@@ -1,9 +1,9 @@
 <?php
 
-define('APP', __DIR__.'/src');
+define('APP', __DIR__.'/server/src');
 define('ROUTES', APP.'/routes');
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/server/vendor/autoload.php';
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -23,8 +23,8 @@ $app->get('/', function(Request $request) use ($app) {
 
 });
 
-$app->mount('/terrain', include ROUTES.'/terrain.php');
-$app->mount('/messier', include ROUTES.'/messier.php');
+$app->mount('/data/terrain', include ROUTES.'/terrain.php');
+$app->mount('/data/messier', include ROUTES.'/messier.php');
 
 
 $app->run();
