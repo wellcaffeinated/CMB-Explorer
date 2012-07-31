@@ -1,0 +1,10 @@
+[2012-07-31 01:42:29] myapp.INFO: > GET /paypal/ [] []
+[2012-07-31 01:42:29] myapp.INFO: PAYPAL Invoice: 
+== Data ==\n
+,,,,,,,,,,,,,,
+== //// ==
+ [] []
+[2012-07-31 01:42:29] myapp.INFO: < 200 [] []
+[2012-07-31 01:42:30] myapp.INFO: > GET /favicon.ico [] []
+[2012-07-31 01:42:30] myapp.ERROR: No route found for "GET /favicon.ico" [] []
+[2012-07-31 01:42:30] myapp.INFO: < 404 [] []

@@ -1,17 +1,122 @@
 [
     {
+        "name": "monolog/monolog",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Seldaek/monolog.git",
+            "reference": "59fb9f41be22b246f5e5d3bd8a012ed77f44a7d0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/Seldaek/monolog/zipball/59fb9f41be22b246f5e5d3bd8a012ed77f44a7d0",
+            "reference": "59fb9f41be22b246f5e5d3bd8a012ed77f44a7d0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "mlehner/gelf-php": "1.0.*"
+        },
+        "suggest": {
+            "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+            "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+            "ext-mongo": "Allow sending log messages to a MongoDB server"
+        },
+        "type": "library",
+        "installation-source": "source",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Jordi Boggiano",
+                "email": "j.boggiano@seld.be",
+                "homepage": "http://seld.be",
+                "role": "Developer"
+            }
+        ],
+        "description": "Logging for PHP 5.3",
+        "homepage": "http://github.com/Seldaek/monolog",
+        "keywords": [
+            "log",
+            "logging"
+        ],
+        "autoload": {
+            "psr-0": {
+                "Monolog": "src/"
+            }
+        }
+    },
+    {
+        "name": "swiftmailer/swiftmailer",
+        "version": "v4.1.8",
+        "version_normalized": "4.1.8.0",
+        "source": {
+            "type": "git",
+            "url": "git://github.com/swiftmailer/swiftmailer.git",
+            "reference": "v4.1.8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://github.com/swiftmailer/swiftmailer/zipball/v4.1.8",
+            "reference": "v4.1.8",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.4"
+        },
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "4.1-dev"
+            }
+        },
+        "installation-source": "dist",
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com",
+                "homepage": null,
+                "role": null
+            },
+            {
+                "name": "Chris Corbyn",
+                "email": "",
+                "homepage": null,
+                "role": null
+            }
+        ],
+        "description": "Swiftmailer, free feature-rich PHP mailer",
+        "homepage": "http://swiftmailer.org",
+        "keywords": [
+            "mail",
+            "mailer"
+        ],
+        "autoload": {
+            "files": [
+                "lib/swift_required.php"
+            ]
+        }
+    },
+    {
         "name": "pimple/pimple",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "git://github.com/fabpot/Pimple.git",
-            "reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be"
+            "reference": "db836b8cfadc0f39dacafa2bf311a1ab603600bb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/fabpot/Pimple/zipball/d2cfa2f02f50abef65c238747c753a5f6786f6be",
-            "reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be",
+            "url": "https://github.com/fabpot/Pimple/zipball/db836b8cfadc0f39dacafa2bf311a1ab603600bb",
+            "reference": "db836b8cfadc0f39dacafa2bf311a1ab603600bb",
             "shasum": ""
         },
         "require": {
@@ -55,12 +160,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/Routing",
-            "reference": "3630f2d08515bbad980c0d654433b6689cf460a2"
+            "reference": "909194d1d24900d99a32df154513cd8cf9936534"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/symfony/Routing/zipball/3630f2d08515bbad980c0d654433b6689cf460a2",
-            "reference": "3630f2d08515bbad980c0d654433b6689cf460a2",
+            "url": "https://github.com/symfony/Routing/zipball/909194d1d24900d99a32df154513cd8cf9936534",
+            "reference": "909194d1d24900d99a32df154513cd8cf9936534",
             "shasum": ""
         },
         "require": {
@@ -117,12 +222,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/EventDispatcher",
-            "reference": "451e0befb42a5552d4e143edcb74e3b4a9733bea"
+            "reference": "v2.1.0-BETA4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/symfony/EventDispatcher/zipball/451e0befb42a5552d4e143edcb74e3b4a9733bea",
-            "reference": "451e0befb42a5552d4e143edcb74e3b4a9733bea",
+            "url": "https://github.com/symfony/EventDispatcher/zipball/v2.1.0-BETA4",
+            "reference": "v2.1.0-BETA4",
             "shasum": ""
         },
         "require": {
@@ -175,12 +280,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/HttpKernel",
-            "reference": "507618b0f3ffb626c81ffc7eda73e4d4f1b7b51a"
+            "reference": "91f3e0892bd0c7f2a5ade8a82024ec4925e26c64"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/symfony/HttpKernel/zipball/507618b0f3ffb626c81ffc7eda73e4d4f1b7b51a",
-            "reference": "507618b0f3ffb626c81ffc7eda73e4d4f1b7b51a",
+            "url": "https://github.com/symfony/HttpKernel/zipball/91f3e0892bd0c7f2a5ade8a82024ec4925e26c64",
+            "reference": "91f3e0892bd0c7f2a5ade8a82024ec4925e26c64",
             "shasum": ""
         },
         "require": {
@@ -245,12 +350,12 @@
         "source": {
             "type": "git",
             "url": "git://github.com/fabpot/Silex.git",
-            "reference": "4bd46b806583e4f6467bba3696dbdf953431c630"
+            "reference": "5f89e59e1bd6c2f1a6b92a73c6518ae83d35378f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/fabpot/Silex/zipball/4bd46b806583e4f6467bba3696dbdf953431c630",
-            "reference": "4bd46b806583e4f6467bba3696dbdf953431c630",
+            "url": "https://github.com/fabpot/Silex/zipball/5f89e59e1bd6c2f1a6b92a73c6518ae83d35378f",
+            "reference": "5f89e59e1bd6c2f1a6b92a73c6518ae83d35378f",
             "shasum": ""
         },
         "require": {
@@ -326,12 +431,12 @@
         "source": {
             "type": "git",
             "url": "git://github.com/fabpot/Twig.git",
-            "reference": "14a472b489fef539bea3ce2e31a0db3200127af7"
+            "reference": "51c866f415bbee670cd9ba13591307bce8dabdca"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/fabpot/Twig/zipball/14a472b489fef539bea3ce2e31a0db3200127af7",
-            "reference": "14a472b489fef539bea3ce2e31a0db3200127af7",
+            "url": "https://github.com/fabpot/Twig/zipball/51c866f415bbee670cd9ba13591307bce8dabdca",
+            "reference": "51c866f415bbee670cd9ba13591307bce8dabdca",
             "shasum": ""
         },
         "require": {
@@ -380,12 +485,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/HttpFoundation",
-            "reference": "bf8937c2e1488cec939a65c7f3aa8ef08079312c"
+            "reference": "2e28043ea4cd2aa173f5ec9f4f38231fd99305b1"
         },
         "dist": {
             "type": "zip",
-            "url": "https://github.com/symfony/HttpFoundation/zipball/bf8937c2e1488cec939a65c7f3aa8ef08079312c",
-            "reference": "bf8937c2e1488cec939a65c7f3aa8ef08079312c",
+            "url": "https://github.com/symfony/HttpFoundation/zipball/2e28043ea4cd2aa173f5ec9f4f38231fd99305b1",
+            "reference": "2e28043ea4cd2aa173f5ec9f4f38231fd99305b1",
             "shasum": ""
         },
         "require": {

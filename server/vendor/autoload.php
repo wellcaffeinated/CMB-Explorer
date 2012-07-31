@@ -21,5 +21,7 @@ return call_user_func(function() {
 
     $loader->register();
 
+    require __DIR__ . '/swiftmailer/swiftmailer/lib/swift_required.php';
+
     return $loader;
 });

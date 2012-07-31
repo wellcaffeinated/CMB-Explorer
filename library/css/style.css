@@ -527,7 +527,7 @@ body.fullscreen {
     right: 0;
     left: 0;
     min-width: 35px;
-    min-height: 50px;
+    min-height: 53px;
     background: url(../../library/images/map_overlay.png) no-repeat top center;
 }
 

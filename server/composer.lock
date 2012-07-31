@@ -1,7 +1,13 @@
 {
-    "hash": "39ebc74702b254895c1fab5c42e60c78",
+    "hash": "a207138b0297ac6c554dd96bcb868d98",
     "packages": [
         {
+            "package": "monolog/monolog",
+            "version": "dev-master",
+            "source-reference": "59fb9f41be22b246f5e5d3bd8a012ed77f44a7d0",
+            "commit-date": "1342167011"
+        },
+        {
             "package": "pimple/pimple",
             "version": "dev-master",
             "alias-pretty-version": "1.0.x-dev",
@@ -10,8 +16,8 @@
         {
             "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "d2cfa2f02f50abef65c238747c753a5f6786f6be",
-            "commit-date": "1341139100"
+            "source-reference": "db836b8cfadc0f39dacafa2bf311a1ab603600bb",
+            "commit-date": "1343051648"
         },
         {
             "package": "silex/silex",
@@ -22,8 +28,12 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "4bd46b806583e4f6467bba3696dbdf953431c630",
-            "commit-date": "1342760935"
+            "source-reference": "5f89e59e1bd6c2f1a6b92a73c6518ae83d35378f",
+            "commit-date": "1343636587"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "v4.1.8"
         },
         {
             "package": "symfony/event-dispatcher",
@@ -34,7 +44,7 @@
         {
             "package": "symfony/event-dispatcher",
             "version": "dev-master",
-            "source-reference": "451e0befb42a5552d4e143edcb74e3b4a9733bea",
+            "source-reference": "v2.1.0-BETA4",
             "commit-date": "1342739894"
         },
         {
@@ -46,8 +56,8 @@
         {
             "package": "symfony/http-foundation",
             "version": "dev-master",
-            "source-reference": "bf8937c2e1488cec939a65c7f3aa8ef08079312c",
-            "commit-date": "1342900339"
+            "source-reference": "2e28043ea4cd2aa173f5ec9f4f38231fd99305b1",
+            "commit-date": "1343512949"
         },
         {
             "package": "symfony/http-kernel",
@@ -58,8 +68,8 @@
         {
             "package": "symfony/http-kernel",
             "version": "dev-master",
-            "source-reference": "507618b0f3ffb626c81ffc7eda73e4d4f1b7b51a",
-            "commit-date": "1342600793"
+            "source-reference": "91f3e0892bd0c7f2a5ade8a82024ec4925e26c64",
+            "commit-date": "1343064472"
         },
         {
             "package": "symfony/routing",
@@ -70,8 +80,8 @@
         {
             "package": "symfony/routing",
             "version": "dev-master",
-            "source-reference": "3630f2d08515bbad980c0d654433b6689cf460a2",
-            "commit-date": "1342708743"
+            "source-reference": "909194d1d24900d99a32df154513cd8cf9936534",
+            "commit-date": "1343512949"
         },
         {
             "package": "twig/twig",
@@ -82,8 +92,8 @@
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "14a472b489fef539bea3ce2e31a0db3200127af7",
-            "commit-date": "1342908706"
+            "source-reference": "51c866f415bbee670cd9ba13591307bce8dabdca",
+            "commit-date": "1343464333"
         }
     ],
     "packages-dev": null,

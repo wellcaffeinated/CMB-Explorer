@@ -14,4 +14,5 @@ return array(
     'Silex' => $vendorDir . '/silex/silex/src/',
     'SessionHandlerInterface' => $vendorDir . '/symfony/http-foundation/Symfony/Component/HttpFoundation/Resources/stubs',
     'Pimple' => $vendorDir . '/pimple/pimple/lib/',
+    'Monolog' => $vendorDir . '/monolog/monolog/src/',
 );
